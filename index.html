@@ -7,77 +7,89 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin-top: 50px;
+      margin-top: 60px;
       background-color: #f5f5f5;
     }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #progress {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
     button {
-      font-size: 20px;
-      padding: 15px 30px;
+      font-size: 18px;
+      padding: 12px 25px;
+      margin: 10px;
       cursor: pointer;
     }
-    ul {
-      margin-top: 40px;
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      margin: 8px 0;
-    }
-    a {
-      text-decoration: none;
-      color: #0066cc;
+
+    #doneMessage {
+      margin-top: 20px;
+      font-weight: bold;
+      color: green;
     }
   </style>
 </head>
 <body>
 
-  <h1>Daily Voting Links</h1>
-  <p>Click the button below to open all voting pages.</p>
+  <h1>Daily Voting Hub</h1>
 
-  <button onclick="openAll()">Open All Voting Sites</button>
+  <div id="progress">0 / 14 completed</div>
 
-  <ul>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=SHAdmin/" target="_blank">SHAdmin</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=Shadow/" target="_blank">Shadow</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=Incantatem/" target="_blank">Incantatem</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=twufoo/" target="_blank">twufoo</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=Logan/" target="_blank">Logan</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=Jamestergirl7-945604/" target="_blank">Jamestergirl7-945604</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=elpidarp/" target="_blank">elpidarp</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=fh_admin/" target="_blank">fh_admin</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=Wander/" target="_blank">Wander</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=VHEA/" target="_blank">VHEA</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=sammiarty-625448/" target="_blank">sammiarty-625448</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=patches/" target="_blank">patches</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=serpent" target="_blank">serpent</a></li>
-    <li><a href="https://www.toprpsites.com/index.php?a=in&u=scorch" target="_blank">scorch</a></li>
-  </ul>
+  <button onclick="openNext()">Open Next Vote</button>
+  <button onclick="resetVotes()">Reset</button>
+
+  <div id="doneMessage"></div>
 
   <script>
-    function openAll() {
-      const links = [
-        "https://www.toprpsites.com/index.php?a=in&u=SHAdmin/",
-        "https://www.toprpsites.com/index.php?a=in&u=Shadow/",
-        "https://www.toprpsites.com/index.php?a=in&u=Incantatem/",
-        "https://www.toprpsites.com/index.php?a=in&u=twufoo/",
-        "https://www.toprpsites.com/index.php?a=in&u=Logan/",
-        "https://www.toprpsites.com/index.php?a=in&u=Jamestergirl7-945604/",
-        "https://www.toprpsites.com/index.php?a=in&u=elpidarp/",
-        "https://www.toprpsites.com/index.php?a=in&u=fh_admin/",
-        "https://www.toprpsites.com/index.php?a=in&u=Wander/",
-        "https://www.toprpsites.com/index.php?a=in&u=VHEA/",
-        "https://www.toprpsites.com/index.php?a=in&u=sammiarty-625448/",
-        "https://www.toprpsites.com/index.php?a=in&u=patches/",
-        "https://www.toprpsites.com/index.php?a=in&u=serpent",
-        "https://www.toprpsites.com/index.php?a=in&u=scorch"
-      ];
+    const links = [
+      "https://www.toprpsites.com/details/SHAdmin/",
+      "https://www.toprpsites.com/details/Shadow/",
+      "https://www.toprpsites.com/details/Incantatem/",
+      "https://www.toprpsites.com/details/twufoo/",
+      "https://www.toprpsites.com/details/Logan/",
+      "https://www.toprpsites.com/details/Jamestergirl7-945604/",
+      "https://www.toprpsites.com/details/elpidarp/",
+      "https://www.toprpsites.com/details/fh_admin/",
+      "https://www.toprpsites.com/details/Wander/",
+      "https://www.toprpsites.com/details/VHEA/",
+      "https://www.toprpsites.com/details/sammiarty-625448/",
+      "https://www.toprpsites.com/details/patches/",
+      "https://www.toprpsites.com/details/serpent/",
+      "https://www.toprpsites.com/details/scorch/"
+    ];
 
-      links.forEach((url, index) => {
-        setTimeout(() => {
-          window.open(url, "_blank");
-        }, index * 500);
-      });
+    let currentIndex = 0;
+
+    function updateProgress() {
+      document.getElementById("progress").innerText =
+        currentIndex + " / " + links.length + " completed";
+
+      if (currentIndex >= links.length) {
+        document.getElementById("doneMessage").innerText =
+          "All voting pages opened.";
+      }
     }
+
+    function openNext() {
+      if (currentIndex < links.length) {
+        window.open(links[currentIndex], "_blank");
+        currentIndex++;
+        updateProgress();
+      }
+    }
+
+    function resetVotes() {
+      currentIndex = 0;
+      document.getElementById("doneMessage").innerText = "";
+      updateProgress();
+    }
+
+    updateProgress();
   </script>
 
 </body>
